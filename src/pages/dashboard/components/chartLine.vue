@@ -1,30 +1,42 @@
 <template>
   <t-card title="价格趋势" class="dashboard-chart-card" :bordered="false" :loading="loading">
-    <div id="monitorContainer" ref="monitorContainer" :style="{ width: '100%', height: `${resizeTime * 326}px` }"></div>
+    <ve-line :data="chartData" :settings="chartSettings"></ve-line>
   </t-card>
 </template>
   <script>
-  
-// import { TooltipComponent, LegendComponent, GridComponent } from 'echarts/components';
-// import { PieChart, LineChart } from 'echarts/charts';
-// import { CanvasRenderer } from 'echarts/renderers';
-import * as echarts from 'echarts/core';
 import { mapState } from 'vuex';
-
+import * as echarts from 'echarts/core';
+import { TitleComponent, ToolboxComponent, TooltipComponent, GridComponent, LegendComponent } from 'echarts/components';
+import { BarChart, LineChart } from 'echarts/charts';
+import { CanvasRenderer } from 'echarts/renderers';
 import { LAST_7_DAYS } from '@/utils/date';
 
 import { changeChartsTheme, getChartListColor } from '@/utils/color';
 
-// echarts.use([TooltipComponent, LegendComponent, PieChart, GridComponent, LineChart, CanvasRenderer]);
-
+echarts.use([
+  TitleComponent,
+  ToolboxComponent,
+  TooltipComponent,
+  GridComponent,
+  LegendComponent,
+  BarChart,
+  LineChart,
+  CanvasRenderer,
+]);
 export default {
   name: 'MiddleChart',
   data() {
+    this.chartSettings = {};
     return {
       LAST_7_DAYS,
       resizeTime: 1,
       currentMonth: this.getThisMonth(),
       loading: false,
+      monitorChart: null,
+      chartData: {
+        columns: [],
+        rows: [],
+      },
     };
   },
   computed: {
@@ -44,38 +56,88 @@ export default {
       [this.monitorChart].forEach((item) => {
         item.dispose();
       });
-    //   this.renderCharts();
+      //   this.renderCharts();
     },
   },
   mounted() {
-    this.$nextTick(() => {
-      this.updateContainer();
-    });
-
-    window.addEventListener('resize', this.updateContainer, false);
-    this.renderCharts();
+    // this.$nextTick(() => {
+    //   this.updateContainer();
+    // });
+    // window.addEventListener('resize', this.updateContainer, false);
+     this.getPriceTrend();
   },
 
   methods: {
     getPriceTrend() {
       this.loading = true;
       let that = this;
-      this.$request
-        .post('/web/staticis/selectPriceTrend', { condition: { ...this.form } })
-        .then((res) => {
-          this.loading = false;
-          console.log(res, 'res');
-          if (res.retCode === 200) {
-              // this.$refs.monitorContainer.removeAttribute('_echarts_instance_');
-              console.log(that.setLineOptions(res.retData), 'this.monitorChart');
-            //   that.monitorChart.clear();
-              that.monitorChart.setOption(that.setLineOptions(res.retData), true);
-          }
-        })
-        .catch((e) => {
-          this.loading = false;
-          console.log(e);
-        });
+      return new Promise((r, j) => {
+        this.$request
+          .post('/web/staticis/selectPriceTrend', { condition: { ...this.form } })
+          .then((res) => {
+              this.loading = false;
+              if (res.retCode === 200 && res.retData.length > 0) {
+              let data = res.retData;
+              const { dateTime = [], placeholderColor, borderColor } = this.$store.state.setting.chartColors;
+              let setData = data.map((v) => {
+                return {
+                  name: v.varietyName,
+                  data: [v.unitPrice],
+                  id: v.varietyId,
+                  date: v.collectDate,
+                  type: 'line',
+                  smooth: false,
+                  showSymbol: true,
+                  symbol: 'circle',
+                  symbolSize: 8,
+                  itemStyle: {
+                    borderColor,
+                    borderWidth: 1,
+                  },
+                  areaStyle: {
+                    opacity: 0.1,
+                  },
+                };
+              });
+              let newArr = setData.reduce((prev, cur) => {
+                //prev是新数组，cur是当前元素
+                let ids = prev.map((item) => {
+                  return item.date;
+                });
+                if (ids.includes(cur.date)) {
+                  prev = prev.map((item) => {
+                    if (item.date == cur.date) {
+                      item = { ...item, ...cur, [item.name]:item.data,[cur.name]:cur.data };
+                    }
+                    return item;
+                  });
+                } else {
+                  prev.push({...cur,[cur.name]:cur.data});
+                }
+                return prev;
+              }, []);
+              console.log(newArr, 'newArr');
+              this.chartData = {
+                columns: ['日期'].concat(Array.from(new Set(data.map((v) => v.varietyName)))),
+                rows: newArr.map((v, i) => {
+                  let result = {
+                    日期: v.date,
+                  };
+                  Array.from(new Set(data.map((v) => v.varietyName))).forEach(item=>{
+                      result[item] =v[item] || 0
+                  })
+                  return result;
+                }),
+              };
+              console.log(this.chartData, 'chartData');
+              r(that.setLineOptions(res.retData));
+            }
+          })
+          .catch((e) => {
+            this.loading = false;
+            console.log(e);
+          });
+      });
     },
     setLineOptions(data) {
       const { dateTime = [], placeholderColor, borderColor } = this.$store.state.setting.chartColors;
@@ -98,6 +160,7 @@ export default {
           },
         };
       });
+      console.log(setData, 'setData');
       let newArr = setData.reduce((prev, cur) => {
         //prev是新数组，cur是当前元素
         let ids = prev.map((item) => {
@@ -195,155 +258,61 @@ export default {
         height: `${this.resizeTime * 326}px`,
       });
     },
-    renderCharts() {
+    async renderCharts() {
       // 资金走势
       if (!this.monitorContainer) {
         this.monitorContainer = document.getElementById('monitorContainer');
       }
+      const { dateTime = [], placeholderColor, borderColor } = this.$store.state.setting.chartColors;
       this.monitorChart = echarts.init(this.$refs.monitorContainer);
-      console.log(this.monitorChart )
-    //   this.monitorChart.setOption(
-    //     {
-    //       color: ['#0052d9', '#f582cf', '#66c9d4', '#f28884', '#4b8eda', '#2dcfd5', '#81ce4b', '#f39a7b'],
-    //       tooltip: {
-    //         trigger: 'item',
-    //       },
-    //       grid: {
-    //         left: '0',
-    //         right: '20px',
-    //         top: '5px',
-    //         bottom: '36px',
-    //         containLabel: true,
-    //       },
-    //       legend: {
-    //         left: 'center',
-    //         bottom: '0',
-    //         orient: 'horizontal',
-    //         data: ['萝卜', '荔枝', '葡萄', '柑橘', '西瓜'],
-    //         textStyle: {
-    //           fontSize: 12,
-    //           color: 'rgba(0, 0, 0, 0.35)',
-    //         },
-    //       },
-    //       xAxis: {
-    //         type: 'category',
-    //         data: ['2025-04-16', '2025-04-17', '2025-04-19', '2025-04-21', '2025-04-22', '2025-04-23', '2025-05-16'],
-    //         boundaryGap: false,
-    //         axisLabel: {
-    //           color: 'rgba(0, 0, 0, 0.35)',
-    //         },
-    //         axisLine: {
-    //           lineStyle: {
-    //             width: 1,
-    //           },
-    //         },
-    //       },
-    //       yAxis: {
-    //         type: 'value',
-    //         axisLabel: {
-    //           color: 'rgba(0, 0, 0, 0.35)',
-    //         },
-    //         splitLine: {
-    //           lineStyle: {
-    //             color: '#dcdcdc',
-    //           },
-    //         },
-    //       },
-    //       series: [
-    //         {
-    //           name: '萝卜',
-    //           data: [5.5, 1.33, 3.17, 3.33],
-    //           id: '8',
-    //           type: 'line',
-    //           smooth: false,
-    //           showSymbol: true,
-    //           symbol: 'circle',
-    //           symbolSize: 8,
-    //           itemStyle: {
-    //             borderColor: '#dcdcdc',
-    //             borderWidth: 1,
-    //           },
-    //           areaStyle: {
-    //             opacity: 0.1,
-    //           },
-    //         },
-    //         {
-    //           name: '荔枝',
-    //           data: [2.08, 11, 2.5],
-    //           id: '10',
-    //           type: 'line',
-    //           smooth: false,
-    //           showSymbol: true,
-    //           symbol: 'circle',
-    //           symbolSize: 8,
-    //           itemStyle: {
-    //             borderColor: '#dcdcdc',
-    //             borderWidth: 1,
-    //           },
-    //           areaStyle: {
-    //             opacity: 0.1,
-    //           },
-    //         },
-    //         {
-    //           name: '葡萄',
-    //           data: [16.67],
-    //           id: '9',
-    //           type: 'line',
-    //           smooth: false,
-    //           showSymbol: true,
-    //           symbol: 'circle',
-    //           symbolSize: 8,
-    //           itemStyle: {
-    //             borderColor: '#dcdcdc',
-    //             borderWidth: 1,
-    //           },
-    //           areaStyle: {
-    //             opacity: 0.1,
-    //           },
-    //         },
-    //         {
-    //           name: '柑橘',
-    //           data: [335, 33.33],
-    //           id: '5',
-    //           type: 'line',
-    //           smooth: false,
-    //           showSymbol: true,
-    //           symbol: 'circle',
-    //           symbolSize: 8,
-    //           itemStyle: {
-    //             borderColor: '#dcdcdc',
-    //             borderWidth: 1,
-    //           },
-    //           areaStyle: {
-    //             opacity: 0.1,
-    //           },
-    //         },
-    //         {
-    //           name: '西瓜',
-    //           data: [4.25],
-    //           id: '7',
-    //           type: 'line',
-    //           smooth: false,
-    //           showSymbol: true,
-    //           symbol: 'circle',
-    //           symbolSize: 8,
-    //           itemStyle: {
-    //             borderColor: '#dcdcdc',
-    //             borderWidth: 1,
-    //           },
-    //           areaStyle: {
-    //             opacity: 0.1,
-    //           },
-    //         },
-    //       ],
-    //     },
-    //     true,
-    //   );
-
-    setTimeout(() => {
-        this.getPriceTrend();
-        
-    }, 1000*2);
+      this.monitorChart.setOption({
+        color: getChartListColor(),
+        tooltip: {
+          trigger: 'item',
+        },
+        grid: {
+          left: '0',
+          right: '20px',
+          top: '5px',
+          bottom: '36px',
+          containLabel: true,
+        },
+        legend: {
+          left: 'center',
+          bottom: '0',
+          orient: 'horizontal', // legend 横向布局。
+          data: [],
+          textStyle: {
+            fontSize: 12,
+            color: placeholderColor,
+          },
+        },
+        xAxis: {
+          type: 'category',
+          data: [],
+          boundaryGap: false,
+          axisLabel: {
+            color: placeholderColor,
+          },
+          axisLine: {
+            lineStyle: {
+              width: 1,
+            },
+          },
+        },
+        series: [],
+        yAxis: {
+          type: 'value',
+          axisLabel: {
+            color: placeholderColor,
+          },
+          splitLine: {
+            lineStyle: {
+              color: borderColor,
+            },
+          },
+        },
+      });
     },
   },
 };

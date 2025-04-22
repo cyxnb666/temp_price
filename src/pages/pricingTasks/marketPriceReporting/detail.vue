@@ -35,7 +35,7 @@
                   <t-input v-model="basicInfo.pricingSource" readonly placeholder="" />
                 </div>
               </t-col>
-              <t-col :span="4" v-show="['1', '2'].includes(collectResource)">
+              <!-- <t-col :span="4" v-show="['1', '2'].includes(collectResource)">
                 <div class="field-item">
                   <label>采价方式</label>
                   <t-input v-model="basicInfo.collectTypeStr" readonly placeholder="" />
@@ -53,7 +53,7 @@
                   <label>实际采价占比</label>
                   <t-input v-model="basicInfo.actualCollectRate" readonly placeholder="" />
                 </div>
-              </t-col>
+              </t-col> -->
               <t-col :span="4">
                 <div class="field-item">
                   <label>审核状态</label>

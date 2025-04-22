@@ -8,11 +8,15 @@
               <t-form-item label="行政区划" name="areaCode">
                 <t-tree-select
                   clearable
+                  :min-collapsed-num="1"
+                  multiple
+                  ref="treeSelect"
                   v-model="formData.areacodes"
                   :treeProps="treeProps"
                   :data="areaList"
                   placeholder="请选择行政区划"
                 />
+                <t-button theme="primary" slot="panelTopContent" @click="slelectAll">全部</t-button>
               </t-form-item>
             </t-col>
             <t-col :span="3">
@@ -68,8 +72,8 @@
                   clearable
                   v-model="formData.specsType"
                   class="form-item-content"
-                  :options="personnelOptions"
-                  placeholder="请选择采价员"
+                  :options="tabList"
+                  placeholder="请选择规格"
                 />
               </t-form-item>
             </t-col>
@@ -126,21 +130,25 @@ export default {
     return {
       tableData: [],
       Timerang: [],
+      tabList: [
+        { label: '按果径', value: 'DIAMETER' },
+        { label: '按重量', value: 'WEIGHT' },
+      ],
       Columns: [
         { title: '省', colKey: 'provinceName' },
         { title: '市', colKey: 'cityName' },
         { title: '区', colKey: 'townName' },
-        { title: '采价点归属',width:'110', colKey: 'stallVestName' },
-        { title: '采价点类型', width:'110',colKey: 'stallTypeName' },
-        { title: '采价点名称',width:'180', colKey: 'stallName' },
+        { title: '采价点归属', width: '110', colKey: 'stallVestName' },
+        { title: '采价点类型', width: '110', colKey: 'stallTypeName' },
+        { title: '采价点名称', width: '180', colKey: 'stallName' },
         { title: '采价员', colKey: 'collectorName' },
         { title: '品种', colKey: 'varietyName' },
-        { title: '品种小类',width:'110', colKey: 'categoryName' },
+        { title: '品种小类', width: '110', colKey: 'categoryName' },
         { title: '销售渠道', colKey: 'saleChannelCnm' },
-        { title: '规格',width:'180', colKey: 'rule' },
+        { title: '规格', width: '180', colKey: 'rule' },
         { title: '价格', colKey: 'unitPrice' },
-        { title: '单位',width:'110', colKey: 'unit' },
-        { title: '价格日期',width:'140', colKey: 'collectDate' },
+        { title: '单位', width: '110', colKey: 'unit' },
+        { title: '价格日期', width: '140', colKey: 'collectDate' },
       ],
       pagination: {
         pageSize: 5,
@@ -182,7 +190,20 @@ export default {
     this.getselectPrices(true);
   },
   methods: {
-
+    slelectAll() {
+      const { treeSelect } = this.$refs;
+      // 取得所有节点
+      const items = treeSelect.getItems();
+      const revertSelection = [];
+      items.forEach((item) => {
+        if (!item.checked && !item.indeterminate) {
+          // checked 为 true, 为直接选中状态
+          // indeterminate 为 true, 为半选状态
+          revertSelection.push(item.value);
+        }
+      });
+      this.formData.areacodes = revertSelection;
+    },
     onSearch() {
       this.$refs.ChartLine.getPriceTrend();
       this.getselectPrices(true);
@@ -195,15 +216,19 @@ export default {
       this.pagination.pageNo = current;
       this.getselectPrices();
     },
-    downLoad(){
-        this.$request
-        .post('/web/staticis/exportPrice', {condition:{...this.formData}}, {
-          responseType: 'arraybuffer',
-          headers: {
-            'Content-Type': 'application/json;charset=UTF-8',
-            Accept: 'application/vnd.ms-excel',
+    downLoad() {
+      this.$request
+        .post(
+          '/web/staticis/exportPrice',
+          { condition: { ...this.formData } },
+          {
+            responseType: 'arraybuffer',
+            headers: {
+              'Content-Type': 'application/json;charset=UTF-8',
+              Accept: 'application/vnd.ms-excel',
+            },
           },
-        })
+        )
         .then((response) => {
           // 处理文件名
           let filename = '清单明细.xlsx';
@@ -271,6 +296,13 @@ export default {
     },
     timeChange(val) {
       this.Timerang = val;
+      if (val.length > 1) {
+        this.formData.bgnDate = val[0];
+        this.formData.endDate = val[1];
+      } else {
+        this.formData.bgnDate = '';
+        this.formData.endDate = '';
+      }
     },
     disableDate(date) {
       if (this.Timerang.length > 1) {

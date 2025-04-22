@@ -4,7 +4,7 @@
       <t-col :lg="6" :xs="12">
         <t-card title="部署趋势" :bordered="false">
           <div class="deploy-panel-left">
-            <div id="monitorContainer" style="width: 100%; height: 265px" />
+            <div id="monitorContainer1" style="width: 100%; height: 265px" />
           </div>
         </t-card>
       </t-col>

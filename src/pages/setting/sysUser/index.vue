@@ -291,23 +291,14 @@ export default Vue.extend({
           value: 'areacode',
           children: 'children',
         },
-        valueMode:'all',
+        valueMode: 'all',
       },
       searchValue: '',
       confirmVisible: false,
+      roleList: [],
     };
   },
   computed: {
-    roleList() {
-      let roleList = this.$store.getters['user/roleList'].records.map((v) => {
-        return {
-          value: v.roleId,
-          label: v.roleName,
-          enabled: v.enabled,
-        };
-      });
-      return roleList.filter((v) => v.enabled == '1');
-    },
     offsetTop() {
       return this.$store.state.setting.isUseTabsRouter ? 48 : 0;
     },
@@ -315,9 +306,33 @@ export default Vue.extend({
   mounted() {
     this.getList();
     this.getAreaList();
+    this.getRoleList()
   },
 
   methods: {
+    getRoleList() {
+      let params = {
+        condition: {
+          remark: '',
+          roleId: '',
+          roleName: '',
+        },
+        pageNo: 1,
+        pageSize: 10000,
+      };
+      this.$request.post('/web/role/pageQueryRoles', params).then((res) => {
+        this.dataLoading = false;
+        const { records = [], total } = res.retData;
+        console.log(res)
+        this.roleList = records.filter(v=>v.enabled == '1').map((v) => {
+          return {
+            value: v.roleId,
+            label: v.roleName,
+            enabled: v.enabled,
+          };
+        });
+      });
+    },
     getAreaList() {
       this.$request
         .get('/web/area/selectWholeAreaTrees')

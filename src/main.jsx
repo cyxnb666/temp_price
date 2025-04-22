@@ -7,6 +7,8 @@ import VueClipboard from 'vue-clipboard2';
 import axiosInstance from '@/utils/request';
 import App from './App.vue';
 import router from './router';
+import VeLine from 'v-charts-v2/lib/line'
+Vue.component(VeLine.name, VeLine)
 import zhConfig from 'tdesign-vue/es/locale/zh_CN';
 // import enConfig from 'tdesign-vue/es/locale/en_US'; // 英文多语言配置
 import { DialogPlugin } from 'tdesign-vue';
