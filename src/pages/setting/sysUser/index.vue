@@ -118,11 +118,12 @@
           <t-input v-model="form.userName" maxlength="20" placeholder="请输入姓名" />
         </t-form-item>
         <t-form-item label="用户类型" name="userType">
-          <div v-for="(check, i) in USER_TYPE" :key="i + 'check'" style="margin-right: 10px">
+          <div v-for="(check, i) in filteredUserTypes" :key="i + 'check'" style="margin-right: 10px">
             <t-checkbox
               :key="check.value"
               :checked="form.userType == check.value"
               :label="check.label"
+              :disabled="true"
               @change="(checked) => checkChange(checked, check.value)"
             ></t-checkbox>
           </div>
@@ -170,6 +171,7 @@ import Trend from '@/components/trend/index.vue';
 import { prefix } from '@/config/global';
 import { USER_TYPE } from '@/constants';
 import store from '@/store';
+import { mapGetters } from 'vuex';
 export default Vue.extend({
   name: 'ListBase',
   components: {
@@ -299,8 +301,14 @@ export default Vue.extend({
     };
   },
   computed: {
+    ...mapGetters('user', ['userInfo']),
     offsetTop() {
       return this.$store.state.setting.isUseTabsRouter ? 48 : 0;
+    },
+    // 过滤用户类型，只显示当前登录用户的类型
+    filteredUserTypes() {
+      if (!this.userInfo?.userType) return this.USER_TYPE;
+      return this.USER_TYPE.filter((item) => item.value === this.userInfo.userType);
     },
   },
   mounted() {
@@ -408,6 +416,10 @@ export default Vue.extend({
     handleSetupContract() {
       this.title = '新增用户';
       this.confirmVisible = true;
+      // 自动设置用户类型为当前登录用户的类型
+      if (this.userInfo?.userType) {
+        this.form.userType = this.userInfo.userType;
+      }
     },
     handleClickDelete({ row }) {
       this.loading = true;

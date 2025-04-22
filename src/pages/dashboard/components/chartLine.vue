@@ -1,6 +1,7 @@
 <template>
   <t-card title="价格趋势" class="dashboard-chart-card" :bordered="false" :loading="loading">
-    <ve-line :data="chartData" :settings="chartSettings"></ve-line>
+    <ve-line :data="chartData" :settings="chartSettings" v-show="isShowChart"></ve-line>
+    <div v-show="!isShowChart" class="empty">暂无图标统计数据</div>
   </t-card>
 </template>
   <script>
@@ -33,6 +34,7 @@ export default {
       currentMonth: this.getThisMonth(),
       loading: false,
       monitorChart: null,
+      isShowChart:false,
       chartData: {
         columns: [],
         rows: [],
@@ -81,7 +83,7 @@ export default {
               const { dateTime = [], placeholderColor, borderColor } = this.$store.state.setting.chartColors;
               let setData = data.map((v) => {
                 return {
-                  name: v.varietyName,
+                  name: v.varietyName || v.specsTypeName,
                   data: [v.unitPrice],
                   id: v.varietyId,
                   date: v.collectDate,
@@ -118,19 +120,22 @@ export default {
               }, []);
               console.log(newArr, 'newArr');
               this.chartData = {
-                columns: ['日期'].concat(Array.from(new Set(data.map((v) => v.varietyName)))),
+                columns: ['日期'].concat(Array.from(new Set(data.map((v) => (v.varietyName || v.specsTypeName))))),
                 rows: newArr.map((v, i) => {
                   let result = {
                     日期: v.date,
                   };
-                  Array.from(new Set(data.map((v) => v.varietyName))).forEach(item=>{
+                  Array.from(new Set(data.map((v) =>  (v.varietyName || v.specsTypeName)))).forEach(item=>{
                       result[item] =v[item] || 0
                   })
                   return result;
                 }),
               };
               console.log(this.chartData, 'chartData');
+              this.isShowChart = true
               r(that.setLineOptions(res.retData));
+            } else {
+              this.isShowChart = false
             }
           })
           .catch((e) => {
@@ -330,6 +335,14 @@ export default {
   ::v-deep .t-card__title {
     font-size: 20px;
     font-weight: 500;
+  }
+  .empty{
+    width: 100%;
+    height: 250px;
+    text-align: center;
+    line-height: 250px;
+    font-size: 18px;
+    font-weight: bold;
   }
 }
 </style>

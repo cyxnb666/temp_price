@@ -16,7 +16,7 @@
                   :data="areaList"
                   placeholder="请选择行政区划"
                 />
-                <t-button theme="primary" slot="panelTopContent" @click="slelectAll">全部</t-button>
+                <t-button theme="primary" slot="panelBottomContent" @click="slelectAll">全部</t-button>
               </t-form-item>
             </t-col>
             <t-col :span="3">
@@ -83,6 +83,10 @@
                   clearable
                   style="width: 100%"
                   v-model="Timerang"
+                  @pick="pickerChange"
+                  @visible-change="visibleChange"
+                  format="YYYY-MM-DD"
+                  valueType="YYYY-MM-DD"
                   :disableDate="disableDate"
                   @change="timeChange"
                   cancel-range-select-limit
@@ -150,6 +154,7 @@ export default {
         { title: '单位', width: '110', colKey: 'unit' },
         { title: '价格日期', width: '140', colKey: 'collectDate' },
       ],
+      disableDate:{ before: 'A', after: 'B' } ,
       pagination: {
         pageSize: 5,
         total: 0,
@@ -179,6 +184,7 @@ export default {
       pointOptions: [],
       categoryOptions: [],
       personnelOptions: [],
+      pickerDate: {},
     };
   },
   mounted() {
@@ -300,21 +306,20 @@ export default {
         this.formData.bgnDate = val[0];
         this.formData.endDate = val[1];
       } else {
+        this.disableDate = {};
         this.formData.bgnDate = '';
         this.formData.endDate = '';
       }
     },
-    disableDate(date) {
-      if (this.Timerang.length > 1) {
-        const minDate = this.Timerang[0];
-        const maxDate = this.Timerang[1];
-        if (minDate && !maxDate) {
-          const diff = Math.abs(minDate.valueOf() - date.valueOf());
-          if (diff > 1000 * 3600 * 24 * 90) {
-            return true;
-          }
-        }
+    pickerChange(val, type) {
+      if(type.partial == 'start'){
+        this.disableDate = { before: new Date(val).getTime(), after: new Date(val).getTime() + 30 * 8.64e7  };
+      } else {
+        this.disableDate = { before: new Date(val).getTime()  - 30 * 8.64e7, after: new Date(val).getTime()  };
       }
+    },
+    visibleChange(val){
+      console.log(val)
     },
     getAreaList() {
       this.$request

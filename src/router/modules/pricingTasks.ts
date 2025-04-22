@@ -62,7 +62,7 @@ export default [
         // component: Layout,
         meta: {
           title: '统计分析',
-          menuId: 11
+          menuId: 12
         },
       }
     ],

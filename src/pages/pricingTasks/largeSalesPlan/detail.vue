@@ -13,19 +13,19 @@
               <t-col :span="4">
                 <div class="field-item">
                   <label>行政区划</label>
-                  <t-input v-model="basicInfo.adminRegion" readonly placeholder="" />
+                  <t-input v-model="basicInfo.adminRegion" disabled placeholder="" />
                 </div>
               </t-col>
               <t-col :span="4">
                 <div class="field-item">
                   <label>采价点</label>
-                  <t-input v-model="basicInfo.pointName" readonly placeholder="" />
+                  <t-input v-model="basicInfo.pointName" disabled placeholder="" />
                 </div>
               </t-col>
               <t-col :span="4">
                 <div class="field-item">
                   <label>上报地点</label>
-                  <t-input v-model="basicInfo.reportLocation" readonly placeholder="" />
+                  <t-input v-model="basicInfo.reportLocation" disabled placeholder="" />
                 </div>
               </t-col>
             </t-row>
@@ -34,19 +34,19 @@
               <t-col :span="4">
                 <div class="field-item">
                   <label>品种大类</label>
-                  <t-input v-model="basicInfo.minorCategory" readonly placeholder="" />
+                  <t-input v-model="basicInfo.minorCategory" disabled placeholder="" />
                 </div>
               </t-col>
               <t-col :span="4">
                 <div class="field-item">
                   <label>品种小类</label>
-                  <t-input v-model="basicInfo.majorCategory" readonly placeholder="" />
+                  <t-input v-model="basicInfo.majorCategory" disabled placeholder="" />
                 </div>
               </t-col>
               <t-col :span="4">
                 <div class="field-item">
                   <label>计划出售时间</label>
-                  <t-input v-model="basicInfo.planSaleTime" readonly placeholder="" />
+                  <t-input v-model="basicInfo.planSaleTime" disabled placeholder="" />
                 </div>
               </t-col>
             </t-row>
@@ -55,19 +55,19 @@
               <t-col :span="4">
                 <div class="field-item">
                   <label>预估重量 (kg)</label>
-                  <t-input v-model="basicInfo.estimatedVolume" readonly placeholder="" />
+                  <t-input v-model="basicInfo.estimatedVolume" disabled placeholder="" />
                 </div>
               </t-col>
               <t-col :span="4">
                 <div class="field-item">
                   <label>采价点类型</label>
-                  <t-input v-model="basicInfo.pointType" readonly placeholder="" />
+                  <t-input v-model="basicInfo.pointType" disabled placeholder="" />
                 </div>
               </t-col>
               <t-col :span="4">
                 <div class="field-item">
                   <label>联系人</label>
-                  <t-input v-model="basicInfo.contactPerson" readonly placeholder="" />
+                  <t-input v-model="basicInfo.contactPerson" disabled placeholder="" />
                 </div>
               </t-col>
             </t-row>
@@ -76,7 +76,7 @@
               <t-col :span="4">
                 <div class="field-item">
                   <label>联系人手机号</label>
-                  <t-input v-model="basicInfo.contactPhone" readonly placeholder="" />
+                  <t-input v-model="basicInfo.contactPhone" disabled placeholder="" />
                 </div>
               </t-col>
             </t-row>
@@ -151,19 +151,19 @@
                   <t-col :span="4">
                     <div class="field-item">
                       <label>采价员</label>
-                      <t-input v-model="pricingInfo.personnel.pricingPersonnel" readonly placeholder="" />
+                      <t-input v-model="pricingInfo.personnel.pricingPersonnel" disabled placeholder="" />
                     </div>
                   </t-col>
                   <t-col :span="4">
                     <div class="field-item">
                       <label>上报时间</label>
-                      <t-input v-model="pricingInfo.personnel.reportTime" readonly placeholder="" />
+                      <t-input v-model="pricingInfo.personnel.reportTime" disabled placeholder="" />
                     </div>
                   </t-col>
                   <t-col :span="4">
                     <div class="field-item">
                       <label>上报地点</label>
-                      <t-input v-model="pricingInfo.personnel.reportLocation" readonly placeholder="" />
+                      <t-input v-model="pricingInfo.personnel.reportLocation" disabled placeholder="" />
                     </div>
                   </t-col>
                 </t-row>
@@ -172,7 +172,7 @@
                   <t-col :span="4">
                     <div class="field-item">
                       <label>审核状态</label>
-                      <t-input v-model="pricingInfo.personnel.auditStatus" readonly placeholder="" />
+                      <t-input v-model="pricingInfo.personnel.auditStatus" disabled placeholder="" />
                     </div>
                   </t-col>
                 </t-row>
@@ -203,19 +203,19 @@
                       <t-col :span="4">
                         <div class="field-item">
                           <label>行政区划</label>
-                          <t-input v-model="currentPoint.adminRegion" readonly placeholder="" />
+                          <t-input v-model="currentPoint.adminRegion" disabled placeholder="" />
                         </div>
                       </t-col>
                       <t-col :span="4">
                         <div class="field-item">
                           <label>详细地址</label>
-                          <t-input v-model="currentPoint.address" readonly placeholder="" />
+                          <t-input v-model="currentPoint.address" disabled placeholder="" />
                         </div>
                       </t-col>
                       <t-col :span="4">
                         <div class="field-item">
                           <label>采价点类型</label>
-                          <t-input v-model="currentPoint.pointType" readonly placeholder="" />
+                          <t-input v-model="currentPoint.pointType" disabled placeholder="" />
                         </div>
                       </t-col>
                     </t-row>
@@ -224,19 +224,19 @@
                       <t-col :span="4">
                         <div class="field-item">
                           <label>采价点归属</label>
-                          <t-input v-model="currentPoint.pointAffiliation" readonly placeholder="" />
+                          <t-input v-model="currentPoint.pointAffiliation" disabled placeholder="" />
                         </div>
                       </t-col>
                       <t-col :span="4">
                         <div class="field-item">
                           <label>采价点联系人</label>
-                          <t-input v-model="currentPoint.contactPerson" readonly placeholder="" />
+                          <t-input v-model="currentPoint.contactPerson" disabled placeholder="" />
                         </div>
                       </t-col>
                       <t-col :span="4">
                         <div class="field-item">
                           <label>采价点联系电话</label>
-                          <t-input v-model="currentPoint.contactPhone" readonly placeholder="" />
+                          <t-input v-model="currentPoint.contactPhone" disabled placeholder="" />
                         </div>
                       </t-col>
                     </t-row>
@@ -248,19 +248,19 @@
                         <t-col :span="4">
                           <div class="field-item">
                             <label>品种大类</label>
-                            <t-input v-model="currentPoint.majorCategory" readonly placeholder="" />
+                            <t-input v-model="currentPoint.majorCategory" disabled placeholder="" />
                           </div>
                         </t-col>
                         <t-col :span="4">
                           <div class="field-item">
                             <label>品种小类</label>
-                            <t-input v-model="currentPoint.minorCategory" readonly placeholder="" />
+                            <t-input v-model="currentPoint.minorCategory" disabled placeholder="" />
                           </div>
                         </t-col>
                         <t-col :span="4">
                           <div class="field-item">
                             <label>价格日期</label>
-                            <t-input v-model="currentPoint.priceDate" readonly placeholder="" />
+                            <t-input v-model="currentPoint.priceDate" disabled placeholder="" />
                           </div>
                         </t-col>
                       </t-row>
@@ -417,19 +417,19 @@
                   <t-col :span="4">
                     <div class="field-item">
                       <label>采价员</label>
-                      <t-input v-model="pricingInfo.selfReported.pricingPersonnel" readonly placeholder="" />
+                      <t-input v-model="pricingInfo.selfReported.pricingPersonnel" disabled placeholder="" />
                     </div>
                   </t-col>
                   <t-col :span="4">
                     <div class="field-item">
                       <label>上报时间</label>
-                      <t-input v-model="pricingInfo.selfReported.reportTime" readonly placeholder="" />
+                      <t-input v-model="pricingInfo.selfReported.reportTime" disabled placeholder="" />
                     </div>
                   </t-col>
                   <t-col :span="4">
                     <div class="field-item">
                       <label>上报地点</label>
-                      <t-input v-model="pricingInfo.selfReported.reportLocation" readonly placeholder="" />
+                      <t-input v-model="pricingInfo.selfReported.reportLocation" disabled placeholder="" />
                     </div>
                   </t-col>
                 </t-row>
@@ -438,7 +438,7 @@
                   <t-col :span="4">
                     <div class="field-item">
                       <label>审核状态</label>
-                      <t-input v-model="pricingInfo.selfReported.auditStatus" readonly placeholder="" />
+                      <t-input v-model="pricingInfo.selfReported.auditStatus" disabled placeholder="" />
                     </div>
                   </t-col>
                 </t-row>
@@ -469,19 +469,19 @@
                       <t-col :span="4">
                         <div class="field-item">
                           <label>行政区划</label>
-                          <t-input v-model="currentSelfReportedPoint.adminRegion" readonly placeholder="" />
+                          <t-input v-model="currentSelfReportedPoint.adminRegion" disabled placeholder="" />
                         </div>
                       </t-col>
                       <t-col :span="4">
                         <div class="field-item">
                           <label>详细地址</label>
-                          <t-input v-model="currentSelfReportedPoint.address" readonly placeholder="" />
+                          <t-input v-model="currentSelfReportedPoint.address" disabled placeholder="" />
                         </div>
                       </t-col>
                       <t-col :span="4">
                         <div class="field-item">
                           <label>采价点类型</label>
-                          <t-input v-model="currentSelfReportedPoint.pointType" readonly placeholder="" />
+                          <t-input v-model="currentSelfReportedPoint.pointType" disabled placeholder="" />
                         </div>
                       </t-col>
                     </t-row>
@@ -490,19 +490,19 @@
                       <t-col :span="4">
                         <div class="field-item">
                           <label>采价点归属</label>
-                          <t-input v-model="currentSelfReportedPoint.pointAffiliation" readonly placeholder="" />
+                          <t-input v-model="currentSelfReportedPoint.pointAffiliation" disabled placeholder="" />
                         </div>
                       </t-col>
                       <t-col :span="4">
                         <div class="field-item">
                           <label>采价点联系人</label>
-                          <t-input v-model="currentSelfReportedPoint.contactPerson" readonly placeholder="" />
+                          <t-input v-model="currentSelfReportedPoint.contactPerson" disabled placeholder="" />
                         </div>
                       </t-col>
                       <t-col :span="4">
                         <div class="field-item">
                           <label>采价点联系电话</label>
-                          <t-input v-model="currentSelfReportedPoint.contactPhone" readonly placeholder="" />
+                          <t-input v-model="currentSelfReportedPoint.contactPhone" disabled placeholder="" />
                         </div>
                       </t-col>
                     </t-row>
@@ -514,19 +514,19 @@
                         <t-col :span="4">
                           <div class="field-item">
                             <label>品种大类</label>
-                            <t-input v-model="currentSelfReportedPoint.majorCategory" readonly placeholder="" />
+                            <t-input v-model="currentSelfReportedPoint.majorCategory" disabled placeholder="" />
                           </div>
                         </t-col>
                         <t-col :span="4">
                           <div class="field-item">
                             <label>品种小类</label>
-                            <t-input v-model="currentSelfReportedPoint.minorCategory" readonly placeholder="" />
+                            <t-input v-model="currentSelfReportedPoint.minorCategory" disabled placeholder="" />
                           </div>
                         </t-col>
                         <t-col :span="4">
                           <div class="field-item">
                             <label>价格日期</label>
-                            <t-input v-model="currentSelfReportedPoint.priceDate" readonly placeholder="" />
+                            <t-input v-model="currentSelfReportedPoint.priceDate" disabled placeholder="" />
                           </div>
                         </t-col>
                       </t-row>
@@ -1405,7 +1405,7 @@ video {
 .back-button-container {
   display: flex;
   justify-content: center;
-  position: sticky;
+  // position: sticky;
   bottom: 0;
   margin-top: 40px;
   padding: 16px 0;

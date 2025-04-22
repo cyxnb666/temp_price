@@ -13,51 +13,51 @@
               <t-col :span="4">
                 <div class="field-item">
                   <label>采价员</label>
-                  <t-input v-model="basicInfo.pricingPersonnel" readonly placeholder="" />
+                  <t-input v-model="basicInfo.pricingPersonnel" disabled placeholder="" />
                 </div>
               </t-col>
               <t-col :span="4">
                 <div class="field-item">
                   <label>上报时间</label>
-                  <t-input v-model="basicInfo.reportDate" readonly placeholder="" />
+                  <t-input v-model="basicInfo.reportDate" disabled placeholder="" />
                 </div>
               </t-col>
               <t-col :span="4" v-show="collectResource == '3'">
                 <div class="field-item">
                   <label>上报地点</label>
-                  <t-input v-model="basicInfo.reportLocation" readonly placeholder="" />
+                  <t-input v-model="basicInfo.reportLocation" disabled placeholder="" />
                 </div>
               </t-col>
 
               <t-col :span="4">
                 <div class="field-item">
                   <label>采价来源</label>
-                  <t-input v-model="basicInfo.pricingSource" readonly placeholder="" />
+                  <t-input v-model="basicInfo.pricingSource" disabled placeholder="" />
                 </div>
               </t-col>
               <!-- <t-col :span="4" v-show="['1', '2'].includes(collectResource)">
                 <div class="field-item">
                   <label>采价方式</label>
-                  <t-input v-model="basicInfo.collectTypeStr" readonly placeholder="" />
+                  <t-input v-model="basicInfo.collectTypeStr" disabled placeholder="" />
                 </div>
               </t-col>
               <t-col :span="4" v-show="['1', '2'].includes(collectResource)">
                 <div class="field-item">
                   <label>占比 (%)</label>
-                  <t-input v-model="basicInfo.collectRate" readonly placeholder="" />
+                  <t-input v-model="basicInfo.collectRate" disabled placeholder="" />
                 </div>
               </t-col>
 
               <t-col :span="4" v-show="['1', '2'].includes(collectResource)">
                 <div class="field-item">
                   <label>实际采价占比</label>
-                  <t-input v-model="basicInfo.actualCollectRate" readonly placeholder="" />
+                  <t-input v-model="basicInfo.actualCollectRate" disabled placeholder="" />
                 </div>
               </t-col> -->
               <t-col :span="4">
                 <div class="field-item">
                   <label>审核状态</label>
-                  <t-input v-model="basicInfo.auditStatus" readonly placeholder="" />
+                  <t-input v-model="basicInfo.auditStatus" disabled placeholder="" />
                 </div>
               </t-col>
             </t-row>
@@ -75,12 +75,9 @@
             <div class="sidebar-navigation">
               <div class="navigation-header">采价点列表</div>
               <div class="navigation-list">
-                <div
-                  v-for="(point, index) in pricingPoints"
-                  :key="index"
+                <div v-for="(point, index) in pricingPoints" :key="index"
                   :class="['navigation-item', currentPointIndex === index ? 'active' : '']"
-                  @click="currentPointCLick(point, index)"
-                >
+                  @click="currentPointCLick(point, index)">
                   {{ point.name }}
                 </div>
               </div>
@@ -95,19 +92,19 @@
                   <t-col :span="4">
                     <div class="field-item">
                       <label>行政区划</label>
-                      <t-input v-model="currentPoint.areaname" readonly placeholder="" />
+                      <t-input v-model="currentPoint.areaname" disabled placeholder="" />
                     </div>
                   </t-col>
                   <t-col :span="4">
                     <div class="field-item">
                       <label>详细地址</label>
-                      <t-input v-model="currentPoint.collectAddress" readonly placeholder="" />
+                      <t-input v-model="currentPoint.collectAddress" disabled placeholder="" />
                     </div>
                   </t-col>
                   <t-col :span="4">
                     <div class="field-item">
                       <label>采价点类型</label>
-                      <t-input v-model="currentPoint.stallTypeName" readonly placeholder="" />
+                      <t-input v-model="currentPoint.stallTypeName" disabled placeholder="" />
                     </div>
                   </t-col>
                 </t-row>
@@ -116,19 +113,19 @@
                   <t-col :span="4">
                     <div class="field-item">
                       <label>采价点归属</label>
-                      <t-input v-model="currentPoint.stallVestName" readonly placeholder="" />
+                      <t-input v-model="currentPoint.stallVestName" disabled placeholder="" />
                     </div>
                   </t-col>
                   <t-col :span="4">
                     <div class="field-item">
                       <label>采价点联系人</label>
-                      <t-input v-model="currentPoint.linkerName" readonly placeholder="" />
+                      <t-input v-model="currentPoint.linkerName" disabled placeholder="" />
                     </div>
                   </t-col>
                   <t-col :span="4">
                     <div class="field-item">
                       <label>采价点联系电话</label>
-                      <t-input v-model="currentPoint.linkerMobile" readonly placeholder="" />
+                      <t-input v-model="currentPoint.linkerMobile" disabled placeholder="" />
                     </div>
                   </t-col>
                 </t-row>
@@ -140,19 +137,19 @@
                     <t-col :span="4">
                       <div class="field-item">
                         <label>品种大类</label>
-                        <t-input v-model="currentPoint.varietyName" readonly placeholder="" />
+                        <t-input v-model="currentPoint.varietyName" disabled placeholder="" />
                       </div>
                     </t-col>
                     <t-col :span="4">
                       <div class="field-item">
                         <label>品种小类</label>
-                        <t-input v-model="currentPoint.categoryName" readonly placeholder="" />
+                        <t-input v-model="currentPoint.categoryName" disabled placeholder="" />
                       </div>
                     </t-col>
                     <t-col :span="4">
                       <div class="field-item">
                         <label>价格日期</label>
-                        <t-input v-model="currentPoint.collectDate" readonly placeholder="" />
+                        <t-input v-model="currentPoint.collectDate" disabled placeholder="" />
                       </div>
                     </t-col>
                   </t-row>
@@ -171,19 +168,12 @@
                   <div class="evidence-section">
                     <div class="evidence-title">价格佐证凭据</div>
                     <div class="credentials-container">
-                      <t-image-viewer
-                        v-for="(file, index) in priceImageFiles"
-                        :key="file.fileId"
-                        :default-index="index"
-                        :images="priceImageUrls"
-                      >
+                      <t-image-viewer v-for="(file, index) in priceImageFiles" :key="file.fileId" :default-index="index"
+                        :images="priceImageUrls">
                         <template #trigger="{ open }">
                           <div class="tdesign-demo-image-viewer__ui-image tdesign-demo-image-viewer__base">
-                            <img
-                              :alt="file.fileName"
-                              :src="file.fileUrl"
-                              class="tdesign-demo-image-viewer__ui-image--img"
-                            />
+                            <img :alt="file.fileName" :src="file.fileUrl"
+                              class="tdesign-demo-image-viewer__ui-image--img" />
                             <div class="tdesign-demo-image-viewer__ui-image--hover" @click="open">
                               <span><browse-icon size="1.4em" /> 预览</span>
                             </div>
@@ -194,11 +184,8 @@
                       <!-- 视频文件 -->
                       <div v-for="file in priceVideoFiles" :key="file.fileId" class="credential-item">
                         <div class="image-container">
-                          <icon-font
-                            name="cloud-download"
-                            class="downVideo"
-                            @click="downloadFile(file.fileId, file.fileName)"
-                          />
+                          <icon-font name="cloud-download" class="downVideo"
+                            @click="downloadFile(file.fileId, file.fileName)" />
                           <video :src="file.fileUrl" autoplay></video>
                         </div>
                       </div>
@@ -214,10 +201,8 @@
                       </div>
 
                       <!-- 如果没有文件，显示占位符 -->
-                      <div
-                        v-if="!priceOtherFiles.length && !priceVideoFiles.length && !priceImageFiles.length"
-                        class="credential-item"
-                      >
+                      <div v-if="!priceOtherFiles.length && !priceVideoFiles.length && !priceImageFiles.length"
+                        class="credential-item">
                         <div class="image-placeholder">
                           <div class="placeholder-x"></div>
                         </div>
@@ -228,19 +213,12 @@
                   <div class="pricing-images-section">
                     <div class="section-subtitle">采价信息</div>
                     <div class="credentials-container">
-                      <t-image-viewer
-                        v-for="(file, index) in collectImageFiles"
-                        :key="file.fileId"
-                        :default-index="index"
-                        :images="collectImageUrls"
-                      >
+                      <t-image-viewer v-for="(file, index) in collectImageFiles" :key="file.fileId"
+                        :default-index="index" :images="collectImageUrls">
                         <template #trigger="{ open }">
                           <div class="tdesign-demo-image-viewer__ui-image tdesign-demo-image-viewer__base">
-                            <img
-                              :alt="file.fileName"
-                              :src="file.fileUrl"
-                              class="tdesign-demo-image-viewer__ui-image--img"
-                            />
+                            <img :alt="file.fileName" :src="file.fileUrl"
+                              class="tdesign-demo-image-viewer__ui-image--img" />
                             <div class="tdesign-demo-image-viewer__ui-image--hover" @click="open">
                               <span><browse-icon size="1.4em" /> 预览</span>
                             </div>
@@ -250,12 +228,9 @@
 
                       <!-- 视频文件 -->
                       <div v-for="file in collectVideoFiles" :key="file.fileId" class="credential-item">
-                        <div class="image-container" >
-                          <icon-font
-                            name="cloud-download"
-                            class="downVideo"
-                            @click="downloadFile(file.fileId, file.fileName)"
-                          />
+                        <div class="image-container">
+                          <icon-font name="cloud-download" class="downVideo"
+                            @click="downloadFile(file.fileId, file.fileName)" />
                           <video :src="file.fileUrl" autoplay controls></video>
                         </div>
                       </div>
@@ -271,10 +246,8 @@
                       </div>
 
                       <!-- 如果没有文件，显示占位符 -->
-                      <div
-                        v-if="!collectOtherFiles.length && !collectVideoFiles.length && !collectImageFiles.length"
-                        class="credential-item"
-                      >
+                      <div v-if="!collectOtherFiles.length && !collectVideoFiles.length && !collectImageFiles.length"
+                        class="credential-item">
                         <div class="image-placeholder">
                           <div class="placeholder-x"></div>
                         </div>
@@ -293,12 +266,8 @@
             <span>审核意见</span>
           </div>
           <div class="audit-opinion">
-            <t-textarea
-              v-model="auditOpinion"
-              placeholder="请输入审核意见..."
-              :autosize="{ minRows: 6 }"
-              :readonly="isAuditOpinionReadonly"
-            />
+            <t-textarea v-model="auditOpinion" placeholder="请输入审核意见..." :autosize="{ minRows: 2 }"
+              :disabled="isAuditOpinionReadonly" />
           </div>
         </div>
 
@@ -309,6 +278,10 @@
         </div>
       </div>
     </t-card>
+    <t-dialog :visible.sync="confirmDialogVisible" :header="confirmDialogTitle" :onConfirm="onConfirmAudit"
+      :onCancel="onCancelAudit" width="420px">
+      <p>{{ confirmDialogContent }}</p>
+    </t-dialog>
   </t-loading>
 </template>
 
@@ -331,6 +304,10 @@ export default Vue.extend({
   },
   data() {
     return {
+      confirmDialogVisible: false,
+      confirmDialogTitle: '',
+      confirmDialogContent: '',
+      pendingAuditResult: '', // 暂存待提交的审核结果
       collectResource: '',
       fvSpecsUnit: {
         mm: '按果径',
@@ -764,7 +741,10 @@ export default Vue.extend({
       this.$router.back();
     },
     handleApprove() {
-      this.submitAuditResult('1');
+      this.confirmDialogTitle = '确认审核通过';
+      this.confirmDialogContent = '确定要审核通过吗？';
+      this.pendingAuditResult = '1';
+      this.confirmDialogVisible = true;
     },
     handleReject() {
       if (!this.auditOpinion.trim()) {
@@ -772,7 +752,21 @@ export default Vue.extend({
         return;
       }
 
-      this.submitAuditResult('2');
+      this.confirmDialogTitle = '确认审核不通过';
+      this.confirmDialogContent = '确定要审核不通过吗？';
+      this.pendingAuditResult = '2';
+      this.confirmDialogVisible = true;
+    },
+    // 添加确认审核方法
+    onConfirmAudit() {
+      this.confirmDialogVisible = false;
+      this.submitAuditResult(this.pendingAuditResult);
+    },
+
+    // 添加取消审核方法
+    onCancelAudit() {
+      this.confirmDialogVisible = false;
+      this.pendingAuditResult = '';
     },
     submitAuditResult(auditResult) {
       this.loading = true;
@@ -937,10 +931,12 @@ export default Vue.extend({
   height: 120px;
   cursor: pointer;
 }
+
 video {
   height: 100%;
   width: 100%;
 }
+
 .image-container {
   width: 100%;
   height: 100%;
@@ -966,6 +962,7 @@ video {
   justify-content: center;
   background-color: #f5f5f5;
 }
+
 .downVideo {
   height: 20px;
   position: absolute;
@@ -975,6 +972,7 @@ video {
   font-size: 20px;
   z-index: 999;
 }
+
 .video-icon {
   font-size: 32px;
   color: #1890ff;
@@ -1065,7 +1063,7 @@ video {
   display: flex;
   justify-content: center;
   gap: 16px;
-  position: sticky;
+  // position: sticky;
   bottom: 0;
   margin-top: 40px;
   padding: 16px 0;
