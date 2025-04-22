@@ -85,12 +85,8 @@
           <div class="sub-section">
             <div class="sub-section-title">订单凭据</div>
             <div class="credentials-container">
-              <t-image-viewer
-                v-for="(file, index) in orderImageFiles"
-                :key="file.fileId"
-                :default-index="index"
-                :images="orderImageUrls"
-              >
+              <t-image-viewer v-for="(file, index) in orderImageFiles" :key="file.fileId" :default-index="index"
+                :images="orderImageUrls">
                 <template #trigger="{ open }">
                   <div class="tdesign-demo-image-viewer__ui-image tdesign-demo-image-viewer__base">
                     <img :alt="file.fileName" :src="file.fileUrl" class="tdesign-demo-image-viewer__ui-image--img" />
@@ -105,11 +101,8 @@
               <div v-for="file in orderVideoFiles" :key="file.fileId" class="credential-item">
                 <div class="image-container">
                   <div class="video-placeholder">
-                    <icon-font
-                      name="cloud-download"
-                      class="downVideo"
-                      @click="downloadFile(file.fileId, file.fileName)"
-                    />
+                    <icon-font name="cloud-download" class="downVideo"
+                      @click="downloadFile(file.fileId, file.fileName)" />
                     <video :src="file.fileUrl" autoplay></video>
                   </div>
                 </div>
@@ -144,261 +137,232 @@
 
           <t-tabs v-model="activeTab">
             <t-tab-panel value="personnel" label="采价员采价数据">
-              <div class="sub-section">
-                <div class="sub-section-title">基础信息</div>
-
-                <t-row :gutter="[16, 16]">
-                  <t-col :span="4">
-                    <div class="field-item">
-                      <label>采价员</label>
-                      <t-input v-model="pricingInfo.personnel.pricingPersonnel" disabled placeholder="" />
-                    </div>
-                  </t-col>
-                  <t-col :span="4">
-                    <div class="field-item">
-                      <label>上报时间</label>
-                      <t-input v-model="pricingInfo.personnel.reportTime" disabled placeholder="" />
-                    </div>
-                  </t-col>
-                  <t-col :span="4">
-                    <div class="field-item">
-                      <label>上报地点</label>
-                      <t-input v-model="pricingInfo.personnel.reportLocation" disabled placeholder="" />
-                    </div>
-                  </t-col>
-                </t-row>
-
-                <t-row :gutter="[16, 16]">
-                  <t-col :span="4">
-                    <div class="field-item">
-                      <label>审核状态</label>
-                      <t-input v-model="pricingInfo.personnel.auditStatus" disabled placeholder="" />
-                    </div>
-                  </t-col>
-                </t-row>
+              <!-- 当没有采价数据时显示的空 -->
+              <div v-if="!pricingInfo.personnel.points || pricingInfo.personnel.points.length === 0" class="empty-data">
+                <t-icon name="info-circle" size="64px" />
+                <p class="empty-data-text">暂无采价员采价数据</p>
+                <p class="empty-data-subtext">当前计划未找到相关的采价员采价信息</p>
               </div>
+              <template v-else>
+                <div class="sub-section">
+                  <div class="sub-section-title">基础信息</div>
 
-              <div class="price-points-section">
-                <!-- 左侧导航栏 -->
-                <div class="sidebar-navigation">
-                  <div class="navigation-header">采价点列表</div>
-                  <div class="navigation-list">
-                    <div
-                      v-for="(point, index) in currentPoints"
-                      :key="index"
-                      :class="['navigation-item', currentPointIndex === index ? 'active' : '']"
-                      @click="currentPointIndex = index"
-                    >
-                      {{ point.name }}
-                    </div>
-                  </div>
+                  <t-row :gutter="[16, 16]">
+                    <t-col :span="4">
+                      <div class="field-item">
+                        <label>采价员</label>
+                        <t-input v-model="pricingInfo.personnel.pricingPersonnel" disabled placeholder="" />
+                      </div>
+                    </t-col>
+                    <t-col :span="4">
+                      <div class="field-item">
+                        <label>上报时间</label>
+                        <t-input v-model="pricingInfo.personnel.reportTime" disabled placeholder="" />
+                      </div>
+                    </t-col>
+                    <t-col :span="4">
+                      <div class="field-item">
+                        <label>上报地点</label>
+                        <t-input v-model="pricingInfo.personnel.reportLocation" disabled placeholder="" />
+                      </div>
+                    </t-col>
+                  </t-row>
+
+                  <t-row :gutter="[16, 16]">
+                    <t-col :span="4">
+                      <div class="field-item">
+                        <label>审核状态</label>
+                        <t-input v-model="pricingInfo.personnel.auditStatus" disabled placeholder="" />
+                      </div>
+                    </t-col>
+                  </t-row>
                 </div>
 
-                <!-- 右侧内容区域 -->
-                <div class="point-content">
-                  <div class="price-point-header">{{ currentPoint.name }}</div>
+                <div class="price-points-section">
+                  <!-- 左侧导航栏 -->
+                  <div class="sidebar-navigation">
+                    <div class="navigation-header">采价点列表</div>
+                    <div class="navigation-list">
+                      <div v-for="(point, index) in currentPoints" :key="index"
+                        :class="['navigation-item', currentPointIndex === index ? 'active' : '']"
+                        @click="currentPointIndex = index">
+                        {{ point.name }}
+                      </div>
+                    </div>
+                  </div>
 
-                  <div class="price-point-details">
-                    <t-row :gutter="[16, 16]">
-                      <t-col :span="4">
-                        <div class="field-item">
-                          <label>行政区划</label>
-                          <t-input v-model="currentPoint.adminRegion" disabled placeholder="" />
-                        </div>
-                      </t-col>
-                      <t-col :span="4">
-                        <div class="field-item">
-                          <label>详细地址</label>
-                          <t-input v-model="currentPoint.address" disabled placeholder="" />
-                        </div>
-                      </t-col>
-                      <t-col :span="4">
-                        <div class="field-item">
-                          <label>采价点类型</label>
-                          <t-input v-model="currentPoint.pointType" disabled placeholder="" />
-                        </div>
-                      </t-col>
-                    </t-row>
+                  <!-- 右侧内容区域 -->
+                  <div class="point-content">
+                    <div class="price-point-header">{{ currentPoint.name }}</div>
 
-                    <t-row :gutter="[16, 16]">
-                      <t-col :span="4">
-                        <div class="field-item">
-                          <label>采价点归属</label>
-                          <t-input v-model="currentPoint.pointAffiliation" disabled placeholder="" />
-                        </div>
-                      </t-col>
-                      <t-col :span="4">
-                        <div class="field-item">
-                          <label>采价点联系人</label>
-                          <t-input v-model="currentPoint.contactPerson" disabled placeholder="" />
-                        </div>
-                      </t-col>
-                      <t-col :span="4">
-                        <div class="field-item">
-                          <label>采价点联系电话</label>
-                          <t-input v-model="currentPoint.contactPhone" disabled placeholder="" />
-                        </div>
-                      </t-col>
-                    </t-row>
-
-                    <div class="price-info">
-                      <div class="price-info-title">价格信息</div>
-
+                    <div class="price-point-details">
                       <t-row :gutter="[16, 16]">
                         <t-col :span="4">
                           <div class="field-item">
-                            <label>品种大类</label>
-                            <t-input v-model="currentPoint.majorCategory" disabled placeholder="" />
+                            <label>行政区划</label>
+                            <t-input v-model="currentPoint.adminRegion" disabled placeholder="" />
                           </div>
                         </t-col>
                         <t-col :span="4">
                           <div class="field-item">
-                            <label>品种小类</label>
-                            <t-input v-model="currentPoint.minorCategory" disabled placeholder="" />
+                            <label>详细地址</label>
+                            <t-input v-model="currentPoint.address" disabled placeholder="" />
                           </div>
                         </t-col>
                         <t-col :span="4">
                           <div class="field-item">
-                            <label>价格日期</label>
-                            <t-input v-model="currentPoint.priceDate" disabled placeholder="" />
+                            <label>采价点类型</label>
+                            <t-input v-model="currentPoint.pointType" disabled placeholder="" />
                           </div>
                         </t-col>
                       </t-row>
 
-                      <t-table :data="currentPoint.priceData" :columns="priceColumns" rowKey="id" bordered />
+                      <t-row :gutter="[16, 16]">
+                        <t-col :span="4">
+                          <div class="field-item">
+                            <label>采价点归属</label>
+                            <t-input v-model="currentPoint.pointAffiliation" disabled placeholder="" />
+                          </div>
+                        </t-col>
+                        <t-col :span="4">
+                          <div class="field-item">
+                            <label>采价点联系人</label>
+                            <t-input v-model="currentPoint.contactPerson" disabled placeholder="" />
+                          </div>
+                        </t-col>
+                        <t-col :span="4">
+                          <div class="field-item">
+                            <label>采价点联系电话</label>
+                            <t-input v-model="currentPoint.contactPhone" disabled placeholder="" />
+                          </div>
+                        </t-col>
+                      </t-row>
 
-                      <div class="evidence-section">
-                        <div class="evidence-title">价格佐证凭据</div>
-                        <div class="credentials-container">
-                          <!-- 图片文件使用 t-image-viewer -->
-                          <t-image-viewer
-                            v-for="(file, index) in getPointImageFiles(currentPoint, 'price')"
-                            :key="file.fileId"
-                            :default-index="index"
-                            :images="getPointImageUrls(currentPoint, 'price')"
-                          >
-                            <template #trigger="{ open }">
-                              <div class="tdesign-demo-image-viewer__ui-image tdesign-demo-image-viewer__base">
-                                <img
-                                  :alt="file.fileName"
-                                  :src="file.fileUrl"
-                                  class="tdesign-demo-image-viewer__ui-image--img"
-                                />
-                                <div class="tdesign-demo-image-viewer__ui-image--hover" @click="open">
-                                  <span><browse-icon size="1.4em" /> 预览</span>
+                      <div class="price-info">
+                        <div class="price-info-title">价格信息</div>
+
+                        <t-row :gutter="[16, 16]">
+                          <t-col :span="4">
+                            <div class="field-item">
+                              <label>品种大类</label>
+                              <t-input v-model="currentPoint.majorCategory" disabled placeholder="" />
+                            </div>
+                          </t-col>
+                          <t-col :span="4">
+                            <div class="field-item">
+                              <label>品种小类</label>
+                              <t-input v-model="currentPoint.minorCategory" disabled placeholder="" />
+                            </div>
+                          </t-col>
+                          <t-col :span="4">
+                            <div class="field-item">
+                              <label>价格日期</label>
+                              <t-input v-model="currentPoint.priceDate" disabled placeholder="" />
+                            </div>
+                          </t-col>
+                        </t-row>
+
+                        <t-table :data="currentPoint.priceData" :columns="priceColumns" rowKey="id" bordered />
+
+                        <div class="evidence-section">
+                          <div class="evidence-title">价格佐证凭据</div>
+                          <div class="credentials-container">
+                            <!-- 图片文件使用 t-image-viewer -->
+                            <t-image-viewer v-for="(file, index) in getPointImageFiles(currentPoint, 'price')"
+                              :key="file.fileId" :default-index="index"
+                              :images="getPointImageUrls(currentPoint, 'price')">
+                              <template #trigger="{ open }">
+                                <div class="tdesign-demo-image-viewer__ui-image tdesign-demo-image-viewer__base">
+                                  <img :alt="file.fileName" :src="file.fileUrl"
+                                    class="tdesign-demo-image-viewer__ui-image--img" />
+                                  <div class="tdesign-demo-image-viewer__ui-image--hover" @click="open">
+                                    <span><browse-icon size="1.4em" /> 预览</span>
+                                  </div>
+                                </div>
+                              </template>
+                            </t-image-viewer>
+
+                            <!-- 视频文件 -->
+                            <div v-for="file in getPointVideoFiles(currentPoint, 'price')" :key="file.fileId"
+                              class="credential-item">
+                              <div class="image-container" @click="viewFile(file.fileUrl)">
+                                <div class="video-placeholder">
+                                  <!-- <i class="video-icon">▶</i>
+                                <div class="file-name">{{ file.fileName }}</div> -->
+                                  <icon-font name="cloud-download" class="downVideo"
+                                    @click="downloadFile(file.fileId, file.fileName)" />
+                                  <video :src="file.fileUrl" autoplay></video>
                                 </div>
                               </div>
-                            </template>
-                          </t-image-viewer>
+                            </div>
 
-                          <!-- 视频文件 -->
-                          <div
-                            v-for="file in getPointVideoFiles(currentPoint, 'price')"
-                            :key="file.fileId"
-                            class="credential-item"
-                          >
-                            <div class="image-container" @click="viewFile(file.fileUrl)">
-                              <div class="video-placeholder">
-                                <!-- <i class="video-icon">▶</i>
-                                <div class="file-name">{{ file.fileName }}</div> -->
-                                <icon-font
-                                  name="cloud-download"
-                                  class="downVideo"
-                                  @click="downloadFile(file.fileId, file.fileName)"
-                                />
-                                <video :src="file.fileUrl" autoplay></video>
+                            <!-- 其他类型文件 -->
+                            <div v-for="file in getPointOtherFiles(currentPoint, 'price')" :key="file.fileId"
+                              class="credential-item">
+                              <div class="file-container" @click="handleFileClick(file)">
+                                <div class="file-icon">
+                                  <i class="file-type">{{ file.fileSuffix.toUpperCase() }}</i>
+                                </div>
+                                <div class="file-name">{{ file.fileName }}</div>
                               </div>
                             </div>
-                          </div>
 
-                          <!-- 其他类型文件 -->
-                          <div
-                            v-for="file in getPointOtherFiles(currentPoint, 'price')"
-                            :key="file.fileId"
-                            class="credential-item"
-                          >
-                            <div class="file-container" @click="handleFileClick(file)">
-                              <div class="file-icon">
-                                <i class="file-type">{{ file.fileSuffix.toUpperCase() }}</i>
+                            <!-- 如果没有文件，显示占位符 -->
+                            <div v-if="!currentPoint.priceFiles || currentPoint.priceFiles.length === 0"
+                              class="credential-item">
+                              <div class="image-placeholder">
+                                <div class="placeholder-x"></div>
                               </div>
-                              <div class="file-name">{{ file.fileName }}</div>
-                            </div>
-                          </div>
-
-                          <!-- 如果没有文件，显示占位符 -->
-                          <div
-                            v-if="!currentPoint.priceFiles || currentPoint.priceFiles.length === 0"
-                            class="credential-item"
-                          >
-                            <div class="image-placeholder">
-                              <div class="placeholder-x"></div>
                             </div>
                           </div>
                         </div>
-                      </div>
 
-                      <div class="pricing-images-section">
-                        <div class="section-subtitle">采价信息</div>
-                        <div class="credentials-container">
-                          <t-image-viewer
-                            v-for="(file, index) in getPointImageFiles(currentPoint, 'collect')"
-                            :key="file.fileId"
-                            :default-index="index"
-                            :images="getPointImageUrls(currentPoint, 'collect')"
-                          >
-                            <template #trigger="{ open }">
-                              <div class="tdesign-demo-image-viewer__ui-image tdesign-demo-image-viewer__base">
-                                <img
-                                  :alt="file.fileName"
-                                  :src="file.fileUrl"
-                                  class="tdesign-demo-image-viewer__ui-image--img"
-                                />
-                                <div class="tdesign-demo-image-viewer__ui-image--hover" @click="open">
-                                  <span><browse-icon size="1.4em" /> 预览</span>
+                        <div class="pricing-images-section">
+                          <div class="section-subtitle">采价信息</div>
+                          <div class="credentials-container">
+                            <t-image-viewer v-for="(file, index) in getPointImageFiles(currentPoint, 'collect')"
+                              :key="file.fileId" :default-index="index"
+                              :images="getPointImageUrls(currentPoint, 'collect')">
+                              <template #trigger="{ open }">
+                                <div class="tdesign-demo-image-viewer__ui-image tdesign-demo-image-viewer__base">
+                                  <img :alt="file.fileName" :src="file.fileUrl"
+                                    class="tdesign-demo-image-viewer__ui-image--img" />
+                                  <div class="tdesign-demo-image-viewer__ui-image--hover" @click="open">
+                                    <span><browse-icon size="1.4em" /> 预览</span>
+                                  </div>
+                                </div>
+                              </template>
+                            </t-image-viewer>
+
+                            <!-- 视频文件 -->
+                            <div v-for="file in getPointVideoFiles(currentPoint, 'collect')" :key="file.fileId"
+                              class="credential-item">
+                              <div class="image-container" @click="viewFile(file.fileUrl)">
+                                <div class="video-placeholder">
+                                  <icon-font name="cloud-download" class="downVideo"
+                                    @click="downloadFile(file.fileId, file.fileName)" />
+                                  <video :src="file.fileUrl" autoplay></video>
                                 </div>
                               </div>
-                            </template>
-                          </t-image-viewer>
+                            </div>
 
-                          <!-- 视频文件 -->
-                          <div
-                            v-for="file in getPointVideoFiles(currentPoint, 'collect')"
-                            :key="file.fileId"
-                            class="credential-item"
-                          >
-                            <div class="image-container" @click="viewFile(file.fileUrl)">
-                              <div class="video-placeholder">
-                                <icon-font
-                                  name="cloud-download"
-                                  class="downVideo"
-                                  @click="downloadFile(file.fileId, file.fileName)"
-                                />
-                                <video :src="file.fileUrl" autoplay></video>
+                            <!-- 其他类型文件 -->
+                            <div v-for="file in getPointOtherFiles(currentPoint, 'collect')" :key="file.fileId"
+                              class="credential-item">
+                              <div class="file-container" @click="handleFileClick(file)">
+                                <div class="file-icon">
+                                  <i class="file-type">{{ file.fileSuffix.toUpperCase() }}</i>
+                                </div>
+                                <div class="file-name">{{ file.fileName }}</div>
                               </div>
                             </div>
-                          </div>
 
-                          <!-- 其他类型文件 -->
-                          <div
-                            v-for="file in getPointOtherFiles(currentPoint, 'collect')"
-                            :key="file.fileId"
-                            class="credential-item"
-                          >
-                            <div class="file-container" @click="handleFileClick(file)">
-                              <div class="file-icon">
-                                <i class="file-type">{{ file.fileSuffix.toUpperCase() }}</i>
+                            <!-- 如果没有文件，显示占位符 -->
+                            <div v-if="!currentPoint.collectFiles || currentPoint.collectFiles.length === 0"
+                              class="credential-item">
+                              <div class="image-placeholder">
+                                <div class="placeholder-x"></div>
                               </div>
-                              <div class="file-name">{{ file.fileName }}</div>
-                            </div>
-                          </div>
-
-                          <!-- 如果没有文件，显示占位符 -->
-                          <div
-                            v-if="!currentPoint.collectFiles || currentPoint.collectFiles.length === 0"
-                            class="credential-item"
-                          >
-                            <div class="image-placeholder">
-                              <div class="placeholder-x"></div>
                             </div>
                           </div>
                         </div>
@@ -406,272 +370,240 @@
                     </div>
                   </div>
                 </div>
-              </div>
+              </template>
             </t-tab-panel>
 
             <t-tab-panel value="selfReported" label="采价点自行采价数据">
-              <div class="sub-section">
-                <div class="sub-section-title">基础信息</div>
-
-                <t-row :gutter="[16, 16]">
-                  <t-col :span="4">
-                    <div class="field-item">
-                      <label>采价员</label>
-                      <t-input v-model="pricingInfo.selfReported.pricingPersonnel" disabled placeholder="" />
-                    </div>
-                  </t-col>
-                  <t-col :span="4">
-                    <div class="field-item">
-                      <label>上报时间</label>
-                      <t-input v-model="pricingInfo.selfReported.reportTime" disabled placeholder="" />
-                    </div>
-                  </t-col>
-                  <t-col :span="4">
-                    <div class="field-item">
-                      <label>上报地点</label>
-                      <t-input v-model="pricingInfo.selfReported.reportLocation" disabled placeholder="" />
-                    </div>
-                  </t-col>
-                </t-row>
-
-                <t-row :gutter="[16, 16]">
-                  <t-col :span="4">
-                    <div class="field-item">
-                      <label>审核状态</label>
-                      <t-input v-model="pricingInfo.selfReported.auditStatus" disabled placeholder="" />
-                    </div>
-                  </t-col>
-                </t-row>
+              <!-- 当没有采价数据时显示的空 -->
+              <div v-if="!pricingInfo.selfReported.points || pricingInfo.selfReported.points.length === 0"
+                class="empty-data">
+                <t-icon name="info-circle" size="64px" />
+                <p class="empty-data-text">暂无采价点自行采价数据</p>
+                <p class="empty-data-subtext">当前计划未找到相关的采价点自行采价信息</p>
               </div>
+              <template v-else>
+                <div class="sub-section">
+                  <div class="sub-section-title">基础信息</div>
 
-              <div class="price-points-section">
-                <!-- 左侧导航栏 -->
-                <div class="sidebar-navigation">
-                  <div class="navigation-header">采价点列表</div>
-                  <div class="navigation-list">
-                    <div
-                      v-for="(point, index) in pricingInfo.selfReported.points"
-                      :key="index"
-                      :class="['navigation-item', selectedSelfReportedPointIndex === index ? 'active' : '']"
-                      @click="selectedSelfReportedPointIndex = index"
-                    >
-                      {{ point.name }}
-                    </div>
-                  </div>
+                  <t-row :gutter="[16, 16]">
+                    <t-col :span="4">
+                      <div class="field-item">
+                        <label>采价员</label>
+                        <t-input v-model="pricingInfo.selfReported.pricingPersonnel" disabled placeholder="" />
+                      </div>
+                    </t-col>
+                    <t-col :span="4">
+                      <div class="field-item">
+                        <label>上报时间</label>
+                        <t-input v-model="pricingInfo.selfReported.reportTime" disabled placeholder="" />
+                      </div>
+                    </t-col>
+                    <t-col :span="4">
+                      <div class="field-item">
+                        <label>上报地点</label>
+                        <t-input v-model="pricingInfo.selfReported.reportLocation" disabled placeholder="" />
+                      </div>
+                    </t-col>
+                  </t-row>
+
+                  <t-row :gutter="[16, 16]">
+                    <t-col :span="4">
+                      <div class="field-item">
+                        <label>审核状态</label>
+                        <t-input v-model="pricingInfo.selfReported.auditStatus" disabled placeholder="" />
+                      </div>
+                    </t-col>
+                  </t-row>
                 </div>
 
-                <!-- 右侧内容区域 -->
-                <div class="point-content">
-                  <div class="price-point-header">{{ currentSelfReportedPoint.name }}</div>
+                <div class="price-points-section">
+                  <!-- 左侧导航栏 -->
+                  <div class="sidebar-navigation">
+                    <div class="navigation-header">采价点列表</div>
+                    <div class="navigation-list">
+                      <div v-for="(point, index) in pricingInfo.selfReported.points" :key="index"
+                        :class="['navigation-item', selectedSelfReportedPointIndex === index ? 'active' : '']"
+                        @click="selectedSelfReportedPointIndex = index">
+                        {{ point.name }}
+                      </div>
+                    </div>
+                  </div>
 
-                  <div class="price-point-details">
-                    <t-row :gutter="[16, 16]">
-                      <t-col :span="4">
-                        <div class="field-item">
-                          <label>行政区划</label>
-                          <t-input v-model="currentSelfReportedPoint.adminRegion" disabled placeholder="" />
-                        </div>
-                      </t-col>
-                      <t-col :span="4">
-                        <div class="field-item">
-                          <label>详细地址</label>
-                          <t-input v-model="currentSelfReportedPoint.address" disabled placeholder="" />
-                        </div>
-                      </t-col>
-                      <t-col :span="4">
-                        <div class="field-item">
-                          <label>采价点类型</label>
-                          <t-input v-model="currentSelfReportedPoint.pointType" disabled placeholder="" />
-                        </div>
-                      </t-col>
-                    </t-row>
+                  <!-- 右侧内容区域 -->
+                  <div class="point-content">
+                    <div class="price-point-header">{{ currentSelfReportedPoint.name }}</div>
 
-                    <t-row :gutter="[16, 16]">
-                      <t-col :span="4">
-                        <div class="field-item">
-                          <label>采价点归属</label>
-                          <t-input v-model="currentSelfReportedPoint.pointAffiliation" disabled placeholder="" />
-                        </div>
-                      </t-col>
-                      <t-col :span="4">
-                        <div class="field-item">
-                          <label>采价点联系人</label>
-                          <t-input v-model="currentSelfReportedPoint.contactPerson" disabled placeholder="" />
-                        </div>
-                      </t-col>
-                      <t-col :span="4">
-                        <div class="field-item">
-                          <label>采价点联系电话</label>
-                          <t-input v-model="currentSelfReportedPoint.contactPhone" disabled placeholder="" />
-                        </div>
-                      </t-col>
-                    </t-row>
-
-                    <div class="price-info">
-                      <div class="price-info-title">价格信息</div>
-
+                    <div class="price-point-details">
                       <t-row :gutter="[16, 16]">
                         <t-col :span="4">
                           <div class="field-item">
-                            <label>品种大类</label>
-                            <t-input v-model="currentSelfReportedPoint.majorCategory" disabled placeholder="" />
+                            <label>行政区划</label>
+                            <t-input v-model="currentSelfReportedPoint.adminRegion" disabled placeholder="" />
                           </div>
                         </t-col>
                         <t-col :span="4">
                           <div class="field-item">
-                            <label>品种小类</label>
-                            <t-input v-model="currentSelfReportedPoint.minorCategory" disabled placeholder="" />
+                            <label>详细地址</label>
+                            <t-input v-model="currentSelfReportedPoint.address" disabled placeholder="" />
                           </div>
                         </t-col>
                         <t-col :span="4">
                           <div class="field-item">
-                            <label>价格日期</label>
-                            <t-input v-model="currentSelfReportedPoint.priceDate" disabled placeholder="" />
+                            <label>采价点类型</label>
+                            <t-input v-model="currentSelfReportedPoint.pointType" disabled placeholder="" />
                           </div>
                         </t-col>
                       </t-row>
 
-                      <t-table
-                        bordered
-                        :data="currentSelfReportedPoint.priceData"
-                        :columns="priceColumns"
-                        rowKey="id"
-                      />
+                      <t-row :gutter="[16, 16]">
+                        <t-col :span="4">
+                          <div class="field-item">
+                            <label>采价点归属</label>
+                            <t-input v-model="currentSelfReportedPoint.pointAffiliation" disabled placeholder="" />
+                          </div>
+                        </t-col>
+                        <t-col :span="4">
+                          <div class="field-item">
+                            <label>采价点联系人</label>
+                            <t-input v-model="currentSelfReportedPoint.contactPerson" disabled placeholder="" />
+                          </div>
+                        </t-col>
+                        <t-col :span="4">
+                          <div class="field-item">
+                            <label>采价点联系电话</label>
+                            <t-input v-model="currentSelfReportedPoint.contactPhone" disabled placeholder="" />
+                          </div>
+                        </t-col>
+                      </t-row>
 
-                      <div class="evidence-section">
-                        <div class="evidence-title">价格佐证凭据</div>
-                        <div class="credentials-container">
-                          <t-image-viewer
-                            v-for="(file, index) in getPointImageFiles(currentSelfReportedPoint, 'price')"
-                            :key="file.fileId"
-                            :default-index="index"
-                            :images="getPointImageUrls(currentSelfReportedPoint, 'price')"
-                          >
-                            <template #trigger="{ open }">
-                              <div class="tdesign-demo-image-viewer__ui-image tdesign-demo-image-viewer__base">
-                                <img
-                                  :alt="file.fileName"
-                                  :src="file.fileUrl"
-                                  class="tdesign-demo-image-viewer__ui-image--img"
-                                />
-                                <div class="tdesign-demo-image-viewer__ui-image--hover" @click="open">
-                                  <span><browse-icon size="1.4em" /> 预览</span>
+                      <div class="price-info">
+                        <div class="price-info-title">价格信息</div>
+
+                        <t-row :gutter="[16, 16]">
+                          <t-col :span="4">
+                            <div class="field-item">
+                              <label>品种大类</label>
+                              <t-input v-model="currentSelfReportedPoint.majorCategory" disabled placeholder="" />
+                            </div>
+                          </t-col>
+                          <t-col :span="4">
+                            <div class="field-item">
+                              <label>品种小类</label>
+                              <t-input v-model="currentSelfReportedPoint.minorCategory" disabled placeholder="" />
+                            </div>
+                          </t-col>
+                          <t-col :span="4">
+                            <div class="field-item">
+                              <label>价格日期</label>
+                              <t-input v-model="currentSelfReportedPoint.priceDate" disabled placeholder="" />
+                            </div>
+                          </t-col>
+                        </t-row>
+
+                        <t-table bordered :data="currentSelfReportedPoint.priceData" :columns="priceColumns"
+                          rowKey="id" />
+
+                        <div class="evidence-section">
+                          <div class="evidence-title">价格佐证凭据</div>
+                          <div class="credentials-container">
+                            <t-image-viewer
+                              v-for="(file, index) in getPointImageFiles(currentSelfReportedPoint, 'price')"
+                              :key="file.fileId" :default-index="index"
+                              :images="getPointImageUrls(currentSelfReportedPoint, 'price')">
+                              <template #trigger="{ open }">
+                                <div class="tdesign-demo-image-viewer__ui-image tdesign-demo-image-viewer__base">
+                                  <img :alt="file.fileName" :src="file.fileUrl"
+                                    class="tdesign-demo-image-viewer__ui-image--img" />
+                                  <div class="tdesign-demo-image-viewer__ui-image--hover" @click="open">
+                                    <span><browse-icon size="1.4em" /> 预览</span>
+                                  </div>
+                                </div>
+                              </template>
+                            </t-image-viewer>
+
+                            <!-- 视频文件 -->
+                            <div v-for="file in getPointVideoFiles(currentSelfReportedPoint, 'price')"
+                              :key="file.fileId" class="credential-item">
+                              <div class="image-container" @click="viewFile(file.fileUrl)">
+                                <div class="video-placeholder">
+                                  <icon-font name="cloud-download" class="downVideo"
+                                    @click="downloadFile(file.fileId, file.fileName)" />
+                                  <video :src="file.fileUrl" autoplay></video>
                                 </div>
                               </div>
-                            </template>
-                          </t-image-viewer>
+                            </div>
 
-                          <!-- 视频文件 -->
-                          <div
-                            v-for="file in getPointVideoFiles(currentSelfReportedPoint, 'price')"
-                            :key="file.fileId"
-                            class="credential-item"
-                          >
-                            <div class="image-container" @click="viewFile(file.fileUrl)">
-                              <div class="video-placeholder">
-                                <icon-font
-                                  name="cloud-download"
-                                  class="downVideo"
-                                  @click="downloadFile(file.fileId, file.fileName)"
-                                />
-                                <video :src="file.fileUrl" autoplay></video>
+                            <!-- 其他类型文件 -->
+                            <div v-for="file in getPointOtherFiles(currentSelfReportedPoint, 'price')"
+                              :key="file.fileId" class="credential-item">
+                              <div class="file-container" @click="handleFileClick(file)">
+                                <div class="file-icon">
+                                  <i class="file-type">{{ file.fileSuffix.toUpperCase() }}</i>
+                                </div>
+                                <div class="file-name">{{ file.fileName }}</div>
                               </div>
                             </div>
-                          </div>
 
-                          <!-- 其他类型文件 -->
-                          <div
-                            v-for="file in getPointOtherFiles(currentSelfReportedPoint, 'price')"
-                            :key="file.fileId"
-                            class="credential-item"
-                          >
-                            <div class="file-container" @click="handleFileClick(file)">
-                              <div class="file-icon">
-                                <i class="file-type">{{ file.fileSuffix.toUpperCase() }}</i>
-                              </div>
-                              <div class="file-name">{{ file.fileName }}</div>
-                            </div>
-                          </div>
-
-                          <!-- 如果没有文件，显示占位符 -->
-                          <div
-                            v-if="
+                            <!-- 如果没有文件，显示占位符 -->
+                            <div v-if="
                               !currentSelfReportedPoint.priceFiles || currentSelfReportedPoint.priceFiles.length === 0
-                            "
-                            class="credential-item"
-                          >
-                            <div class="image-placeholder">
-                              <div class="placeholder-x"></div>
+                            " class="credential-item">
+                              <div class="image-placeholder">
+                                <div class="placeholder-x"></div>
+                              </div>
                             </div>
                           </div>
                         </div>
-                      </div>
 
-                      <div class="pricing-images-section">
-                        <div class="section-subtitle">采价信息</div>
-                        <div class="credentials-container">
-                          <t-image-viewer
-                            v-for="(file, index) in getPointImageFiles(currentSelfReportedPoint, 'collect')"
-                            :key="file.fileId"
-                            :default-index="index"
-                            :images="getPointImageUrls(currentSelfReportedPoint, 'collect')"
-                          >
-                            <template #trigger="{ open }">
-                              <div class="tdesign-demo-image-viewer__ui-image tdesign-demo-image-viewer__base">
-                                <img
-                                  :alt="file.fileName"
-                                  :src="file.fileUrl"
-                                  class="tdesign-demo-image-viewer__ui-image--img"
-                                />
-                                <div class="tdesign-demo-image-viewer__ui-image--hover" @click="open">
-                                  <span><browse-icon size="1.4em" /> 预览</span>
+                        <div class="pricing-images-section">
+                          <div class="section-subtitle">采价信息</div>
+                          <div class="credentials-container">
+                            <t-image-viewer
+                              v-for="(file, index) in getPointImageFiles(currentSelfReportedPoint, 'collect')"
+                              :key="file.fileId" :default-index="index"
+                              :images="getPointImageUrls(currentSelfReportedPoint, 'collect')">
+                              <template #trigger="{ open }">
+                                <div class="tdesign-demo-image-viewer__ui-image tdesign-demo-image-viewer__base">
+                                  <img :alt="file.fileName" :src="file.fileUrl"
+                                    class="tdesign-demo-image-viewer__ui-image--img" />
+                                  <div class="tdesign-demo-image-viewer__ui-image--hover" @click="open">
+                                    <span><browse-icon size="1.4em" /> 预览</span>
+                                  </div>
+                                </div>
+                              </template>
+                            </t-image-viewer>
+
+                            <!-- 视频文件 -->
+                            <div v-for="file in getPointVideoFiles(currentSelfReportedPoint, 'collect')"
+                              :key="file.fileId" class="credential-item">
+                              <div class="image-container" @click="viewFile(file.fileUrl)">
+                                <div class="video-placeholder">
+                                  <icon-font name="cloud-download" class="downVideo"
+                                    @click="downloadFile(file.fileId, file.fileName)" />
+                                  <video :src="file.fileUrl" autoplay></video>
                                 </div>
                               </div>
-                            </template>
-                          </t-image-viewer>
+                            </div>
 
-                          <!-- 视频文件 -->
-                          <div
-                            v-for="file in getPointVideoFiles(currentSelfReportedPoint, 'collect')"
-                            :key="file.fileId"
-                            class="credential-item"
-                          >
-                            <div class="image-container" @click="viewFile(file.fileUrl)">
-                              <div class="video-placeholder">
-                                <icon-font
-                                  name="cloud-download"
-                                  class="downVideo"
-                                  @click="downloadFile(file.fileId, file.fileName)"
-                                />
-                                <video :src="file.fileUrl" autoplay></video>
+                            <!-- 其他类型文件 -->
+                            <div v-for="file in getPointOtherFiles(currentSelfReportedPoint, 'collect')"
+                              :key="file.fileId" class="credential-item">
+                              <div class="file-container" @click="handleFileClick(file)">
+                                <div class="file-icon">
+                                  <i class="file-type">{{ file.fileSuffix.toUpperCase() }}</i>
+                                </div>
+                                <div class="file-name">{{ file.fileName }}</div>
                               </div>
                             </div>
-                          </div>
 
-                          <!-- 其他类型文件 -->
-                          <div
-                            v-for="file in getPointOtherFiles(currentSelfReportedPoint, 'collect')"
-                            :key="file.fileId"
-                            class="credential-item"
-                          >
-                            <div class="file-container" @click="handleFileClick(file)">
-                              <div class="file-icon">
-                                <i class="file-type">{{ file.fileSuffix.toUpperCase() }}</i>
-                              </div>
-                              <div class="file-name">{{ file.fileName }}</div>
-                            </div>
-                          </div>
-
-                          <!-- 如果没有文件，显示占位符 -->
-                          <div
-                            v-if="
+                            <!-- 如果没有文件，显示占位符 -->
+                            <div v-if="
                               !currentSelfReportedPoint.collectFiles ||
                               currentSelfReportedPoint.collectFiles.length === 0
-                            "
-                            class="credential-item"
-                          >
-                            <div class="image-placeholder">
-                              <div class="placeholder-x"></div>
+                            " class="credential-item">
+                              <div class="image-placeholder">
+                                <div class="placeholder-x"></div>
+                              </div>
                             </div>
                           </div>
                         </div>
@@ -679,7 +611,7 @@
                     </div>
                   </div>
                 </div>
-              </div>
+              </template>
             </t-tab-panel>
           </t-tabs>
         </div>
@@ -1204,6 +1136,7 @@ export default Vue.extend({
   height: 120px;
   position: relative;
 }
+
 video {
   height: 100%;
   width: 100%;
@@ -1309,6 +1242,7 @@ video {
   align-items: center;
   justify-content: center;
   background-color: #f5f5f5;
+
   .downVideo {
     height: 20px;
     position: absolute;
@@ -1465,5 +1399,31 @@ video {
   margin: 0;
   border: 1px solid var(--td-bg-color-secondarycontainer);
   border-radius: var(--td-radius-medium);
+}
+
+.empty-data {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 0;
+  color: var(--td-text-color-secondary);
+
+  .t-icon {
+    margin-bottom: 20px;
+    color: var(--td-text-color-placeholder);
+  }
+
+  .empty-data-text {
+    font-size: 16px;
+    font-weight: 500;
+    margin-bottom: 8px;
+    color: var(--td-text-color-primary);
+  }
+
+  .empty-data-subtext {
+    font-size: 14px;
+    color: var(--td-text-color-secondary);
+  }
 }
 </style>
