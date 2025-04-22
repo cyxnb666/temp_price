@@ -2,8 +2,9 @@
   <div :class="layoutCls">
     <t-head-menu :class="menuCls" :theme="theme" expandType="popup" :value="active">
       <template #logo>
-        <span v-if="showLogo" class="header-logo-container" @click="handleNav('/dashboard/base')">
-          <!-- <logo-full class="t-logo" /> -->
+        <span v-if="showLogo" class="header-logo-container">
+          <img src="@/assets/logo.png" alt="logo" class="logo-img" />
+          <span class="system-name">采价系统</span>
         </span>
         <div v-else class="header-operate-left">
           <t-button theme="default" shape="square" variant="text" @click="changeCollapsed">
@@ -170,7 +171,26 @@ export default Vue.extend({
 </script>
 <style lang="less">
 @import '@/style/variables.less';
-
+.header-logo-container {
+  width: 184px;
+  height: 26px;
+  display: flex;
+  margin-left: 24px;
+  color: var(--td-text-color-primary);
+  align-items: center;
+  
+  .logo-img {
+    height: 32px;
+    width: auto;
+    margin-right: 8px;
+  }
+  
+  .system-name {
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--td-text-color-primary);
+  }
+}
 .header-menu {
   flex: 1 1 1;
   display: inline-flex;

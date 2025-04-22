@@ -8,9 +8,11 @@
       :collapsed="collapsed"
       :defaultExpanded="defaultExpanded"
     >
-      <template #logo>
-        <span v-if="showLogo" :class="`${prefix}-side-nav-logo-wrapper`" @click="() => handleNav('/dashboard/base')">
-          <component :is="getLogo" :class="`${prefix}-side-nav-logo-${collapsed ? 't' : 'tdesign'}-logo`" />
+    <template #logo>
+        <span v-if="showLogo" :class="`${prefix}-side-nav-logo-wrapper`">
+          <img v-if="!collapsed" src="@/assets/logo.png" alt="logo" class="logo-img" />
+          <span v-if="!collapsed" class="system-name">采价系统</span>
+          <img v-else src="@/assets/logo.png" alt="logo" class="logo-img-mini" />
         </span>
       </template>
       <menu-content :navData="menu" />
