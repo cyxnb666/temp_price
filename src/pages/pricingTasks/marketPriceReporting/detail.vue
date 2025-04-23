@@ -741,8 +741,8 @@ export default Vue.extend({
       this.$router.back();
     },
     handleApprove() {
-      this.confirmDialogTitle = '确认审核通过';
-      this.confirmDialogContent = '确定要审核通过吗？';
+      this.confirmDialogTitle = '审核通过';
+      this.confirmDialogContent = '是否确认审核结果？';
       this.pendingAuditResult = '1';
       this.confirmDialogVisible = true;
     },
@@ -752,8 +752,8 @@ export default Vue.extend({
         return;
       }
 
-      this.confirmDialogTitle = '确认审核不通过';
-      this.confirmDialogContent = '确定要审核不通过吗？';
+      this.confirmDialogTitle = '审核不通过';
+      this.confirmDialogContent = '是否确认审核结果？';
       this.pendingAuditResult = '2';
       this.confirmDialogVisible = true;
     },

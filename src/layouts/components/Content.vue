@@ -1,7 +1,7 @@
 <template>
   <transition name="fade" mode="out-in">
-    <keep-alive :include="this.aliveViews">
-      <router-view v-if="!this.isRefreshing" />
+    <keep-alive >
+      <router-view  />
     </keep-alive>
   </transition>
 </template>
@@ -18,6 +18,7 @@ export default {
       isUseTabsRouter: 'setting/isUseTabsRouter',
     }),
     aliveViews() {
+      console.log(this.tabRouterList)
       return this.tabRouterList
         .filter((route) => {
           const keepAliveConfig = route.meta?.keepAlive;

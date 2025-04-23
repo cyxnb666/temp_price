@@ -131,9 +131,21 @@ export default {
     chartLine,
   },
   data() {
+    const today = new Date();
+    const yyyy = today.getFullYear();
+    const mm = String(today.getMonth() + 1).padStart(2, '0');
+    const dd = String(today.getDate()).padStart(2, '0');
+    const startDate = `${yyyy}-${mm}-${dd}`;
+
+    const next = new Date(today);
+    next.setMonth(next.getMonth() + 1);
+    const yyyy2 = next.getFullYear();
+    const mm2 = String(next.getMonth() + 1).padStart(2, '0');
+    const dd2 = String(next.getDate()).padStart(2, '0');
+    const endDate = `${yyyy2}-${mm2}-${dd2}`;
     return {
       tableData: [],
-      Timerang: [],
+      Timerang: [startDate, endDate],
       tabList: [
         { label: '按果径', value: 'DIAMETER' },
         { label: '按重量', value: 'WEIGHT' },
@@ -154,7 +166,7 @@ export default {
         { title: '单位', width: '110', colKey: 'unit' },
         { title: '价格日期', width: '140', colKey: 'collectDate' },
       ],
-      disableDate:{ before: 'A', after: 'B' } ,
+      disableDate: { before: 'A', after: 'B' },
       pagination: {
         pageSize: 5,
         total: 0,
@@ -162,8 +174,8 @@ export default {
       },
       formData: {
         areacodes: [],
-        bgnDate: '',
-        endDate: '',
+        bgnDate: startDate,
+        endDate: endDate,
         specsType: '',
         stallId: '',
         stallType: '',
@@ -275,8 +287,20 @@ export default {
         });
     },
     onReset() {
-      this.$refs.ChartLine.getPriceTrend();
+      this.formData = {
+        areacodes: [],
+        bgnDate: '',
+        endDate: '',
+        specsType: '',
+        stallId: '',
+        stallType: '',
+        stallVest: '',
+        varietyId: '',
+      };
+      this.$set(this.formData,'areacodes',[])
+      this.Timerang = []
       this.getselectPrices(true);
+      this.$refs.ChartLine.getPriceTrend(this.formData);
     },
     getselectPrices(flag) {
       if (flag) this.pagination.pageNo = 1;
@@ -312,14 +336,14 @@ export default {
       }
     },
     pickerChange(val, type) {
-      if(type.partial == 'start'){
-        this.disableDate = { before: new Date(val).getTime(), after: new Date(val).getTime() + 30 * 8.64e7  };
+      if (type.partial == 'start') {
+        this.disableDate = { before: new Date(val).getTime(), after: new Date(val).getTime() + 90 * 8.64e7 };
       } else {
-        this.disableDate = { before: new Date(val).getTime()  - 30 * 8.64e7, after: new Date(val).getTime()  };
+        this.disableDate = { before: new Date(val).getTime() - 90 * 8.64e7, after: new Date(val).getTime() };
       }
     },
-    visibleChange(val){
-      console.log(val)
+    visibleChange(val) {
+      console.log(val);
     },
     getAreaList() {
       this.$request

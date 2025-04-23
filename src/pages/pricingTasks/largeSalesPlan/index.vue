@@ -253,6 +253,7 @@ export default Vue.extend({
         { label: '待审核', value: '4' },
         { label: '已完成', value: '5' },
       ],
+      paramsData:null,
       pagination: {
         pageSize: 10,
         total: 0,
@@ -295,7 +296,14 @@ export default Vue.extend({
       this.getPointOptions(stallType, stallVests, areacodes);
     },
   },
+  destroyed() {
+      this.paramsData = null
+  },
   mounted() {
+    if (sessionStorage.getItem(this.$route.name)) {
+        this.paramsData = { ...JSON.parse(sessionStorage.getItem(this.$route.name)) };
+        console.log(this.paramsData, 'this.paramsData');
+      }
     this.getList();
     this.getAreaList();
     this.getPointTypeOptions();
@@ -560,8 +568,7 @@ export default Vue.extend({
       }
 
       this.dataLoading = true;
-
-      const params = {
+      let params =  {
         condition: {
           areaCode: this.formData.areaCode,
           stallType: this.formData.stallType,
@@ -574,7 +581,7 @@ export default Vue.extend({
         pageNo: this.pagination.pageNo,
         pageSize: this.pagination.pageSize,
       };
-
+      sessionStorage.setItem(this.$route.name, JSON.stringify({ ...params }));
       this.$request
         .post('/web/large/pageQueryLargeSalePlans', params)
         .then((res) => {

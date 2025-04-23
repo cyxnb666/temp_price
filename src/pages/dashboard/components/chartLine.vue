@@ -60,6 +60,14 @@ export default {
       });
       //   this.renderCharts();
     },
+    form:{
+      handler(newVal,oldVal){
+        console.log(newVal,oldVal)
+        // this.getPriceTrend(newVal);
+      },
+      deep:true,
+      immediate:true
+    }
   },
   mounted() {
     // this.$nextTick(() => {
@@ -70,12 +78,13 @@ export default {
   },
 
   methods: {
-    getPriceTrend() {
+    getPriceTrend(form) {
       this.loading = true;
+      let param = form || this.form
       let that = this;
       return new Promise((r, j) => {
         this.$request
-          .post('/web/staticis/selectPriceTrend', { condition: { ...this.form } })
+          .post('/web/staticis/selectPriceTrend', { condition: { ...param } })
           .then((res) => {
               this.loading = false;
               if (res.retCode === 200 && res.retData.length > 0) {

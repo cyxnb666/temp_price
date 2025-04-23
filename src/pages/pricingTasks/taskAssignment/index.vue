@@ -149,6 +149,15 @@
               @click="handleDelete(slotProps)"
               >删除</t-button
             >
+            <!-- <t-button
+              theme="primary"
+              variant="text"
+              class="t-button-link"
+              style="color: #0052d9; padding: 0px 0px 10px 0px"
+              @click="handleViewDetails(slotProps)"
+              >详情</t-button
+            > -->
+            
           </template>
         </t-table>
       </div>
@@ -532,6 +541,14 @@ export default Vue.extend({
     this.getCategoryOptions();
   },
   methods: {
+    handleViewDetails({ row }) {
+      this.$router.push({
+        name: 'marketPriceReportingDetail',
+        params: {
+          id: String(row.collectorId),
+        },
+      });
+    },
     getDialogPointOptions(stallType = '', stallVests = [], areacodes = [],varietyIds = []) {
       const params = {
         condition: {
